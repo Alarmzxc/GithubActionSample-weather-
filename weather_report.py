@@ -69,13 +69,14 @@ def get_access_token():
 
 
 def get_daily_love():
-    # 每日一句情话
     url = "https://v1.hitokoto.cn/?c=i&encode=json"
-    r = requests.get(url)
-    all_dict = json.loads(r.text)
-    sentence = all_dict['returnObj'][0]
-    daily_love = sentence
-    return daily_love
+    try:
+        r = requests.get(url, timeout=5)
+        r.raise_for_status()          # 非 200 会抛异常
+        data = r.json()               # 等价于 json.loads(r.text)
+        return data["hitokoto"]       # 接口返回的句子
+    except Exception:
+        return "愿你今天比昨天更快乐~"
 
 
 def send_weather(access_token, weather):
